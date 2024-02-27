@@ -1,3 +1,21 @@
+const Sequelize = require('sequelize');
+const config = require('./config/database');
+const { username, password, database, host, dialect } = config.development;
+
+const sequelize = new Sequelize(database, username, password, {
+  host: host,
+  dialect: dialect
+});
+
+// データベースとの接続を確立する
+sequelize.authenticate()
+  .then(() => {
+    console.log('Database connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
