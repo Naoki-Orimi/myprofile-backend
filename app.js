@@ -1,7 +1,22 @@
 const Sequelize = require('sequelize');
+// sessionとpassportを入れて、ログイン機能を作ろうとしたけど、一旦保留。ゆくゆく作ればいいかな…
+const session = require('express-session');
+const passport = require('passport');
 const config = require('./config/database');
 const { username, password, database, host, dialect } = config.development;
+var createError = require('http-errors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
 
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+
+var app = express();
+
+// TODO: ゆくゆくは環境に応じてdatabase情報を変えたいため、環境変数で管理したい
+// sequelizeの初期化（DBの接続）
 const sequelize = new Sequelize(database, username, password, {
   host: host,
   dialect: dialect
@@ -16,17 +31,6 @@ sequelize.authenticate()
     console.error('Unable to connect to the database:', err);
   });
 
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
-var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -37,12 +41,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ルーティング設定
+// routes/で作成されたモジュールをここでインポートすることで、ルーティング設定する。
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+// リクエストの確認
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+next(createError(404));
 });
 
 // error handler
