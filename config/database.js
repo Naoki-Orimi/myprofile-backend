@@ -1,3 +1,4 @@
+// これ作る必要あったか？まじで消したい
 module.exports = {
     development: {
       username: 'root',          // データベースのユーザー名

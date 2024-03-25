@@ -1,6 +1,6 @@
 'use strict';
 const {
-  Model, INTEGER
+  Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class user extends Model {
@@ -15,13 +15,22 @@ module.exports = (sequelize, DataTypes) => {
   }
   // ユーザーテーブル
   user.init({
-    name: DataTypes.STRING,
-    birth: DataTypes.DATE,
-    country_code: DataTypes.INTEGER
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    user_code: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: () => generateRandomString(6),
+    }
   }, {
     sequelize,
     modelName: 'user',
     underscored: true,
+    timestamps: true,
+    createdAt: 'created_at', // フィールド名を変更
+    updatedAt: 'updated_at' // フィールド名を変更
   });
   return user;
 };
